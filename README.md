@@ -8,8 +8,7 @@ Backend desenvolvido em Spring Boot para o sistema de gestão de restaurantes. C
 - Spring Boot 3.5
 - Spring Security + JWT
 - PostgreSQL 16
-- Docker + Docker Compose
-- Maven
+- Docker 
 
 ## 🚀 Como executar
 
@@ -71,12 +70,3 @@ Para importar no Postman:
 ```bash
 npx @usebruno/cli export --output postman-collection.json --format postman
 ```
-
-## 🔑 Variáveis de ambiente
-
-| Variável | Padrão | Descrição |
-|----------|--------|-----------|
-| SPRING_DATASOURCE_URL | jdbc:postgresql://postgres:5432/restaurant | URL do banco |
-| SPRING_DATASOURCE_USERNAME | admin | Usuário do banco |
-| SPRING_DATASOURCE_PASSWORD | admin123 | Senha do banco |
-| JWT_SECRET | (valor padrão) | Chave de assinatura JWT — troque em produção |
