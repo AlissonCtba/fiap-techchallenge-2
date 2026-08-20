@@ -1,0 +1,24 @@
+meta {
+  name: Busca - Usuários por nome (com paginação)
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/api/v1/users/search?name=jo&page=0&size=5
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("retorna estrutura paginada", function() {
+    expect(res.body.content).to.be.an("array");
+    expect(res.body.page.totalElements).to.be.a("number");
+  });
+}

@@ -1,0 +1,16 @@
+meta {
+  name: Perfil - Sem token (erro 401/403)
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/v1/users/me
+  auth: none
+}
+
+tests {
+  test("status 401 ou 403 sem token", function() {
+    expect([401, 403]).to.include(res.status);
+  });
+}

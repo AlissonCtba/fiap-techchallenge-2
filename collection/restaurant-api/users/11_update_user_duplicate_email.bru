@@ -1,0 +1,39 @@
+meta {
+  name: Atualização - E-mail já em uso (erro 409)
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{baseUrl}}/api/v1/users/me
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "João Restaurante",
+    "login": "joao.owner",
+    "email": "maria@cliente.com",
+    "address": {
+      "street": "Rua X",
+      "number": "1",
+      "city": "SP",
+      "state": "SP",
+      "zipCode": "01310-000"
+    }
+  }
+}
+
+tests {
+  test("status 409 Conflict", function() {
+    expect(res.status).to.equal(409);
+  });
+  test("RFC 7807 - title presente", function() {
+    expect(res.body.title).to.be.a("string");
+  });
+}

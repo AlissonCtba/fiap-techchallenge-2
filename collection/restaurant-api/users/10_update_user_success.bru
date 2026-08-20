@@ -1,0 +1,39 @@
+meta {
+  name: Atualização - Dados do usuário (sucesso)
+  type: http
+  seq: 10
+}
+
+patch {
+  url: {{baseUrl}}/api/v1/users/me
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "João Atualizado",
+    "login": "joao.owner",
+    "email": "joao@restaurante.com",
+    "address": {
+      "street": "Rua Nova",
+      "number": "456",
+      "city": "Campinas",
+      "state": "SP",
+      "zipCode": "13010-000"
+    }
+  }
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("nome atualizado", function() {
+    expect(res.body.name).to.equal("João Atualizado");
+  });
+}

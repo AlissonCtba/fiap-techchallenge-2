@@ -1,0 +1,26 @@
+meta {
+  name: Cadastro - Campos obrigatórios faltando (erro 400)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "semcampos@teste.com"
+  }
+}
+
+tests {
+  test("status 400 Bad Request", function() {
+    expect(res.status).to.equal(400);
+  });
+  test("RFC 7807 - fields com erros", function() {
+    expect(res.body.fields).to.be.an("object");
+  });
+}

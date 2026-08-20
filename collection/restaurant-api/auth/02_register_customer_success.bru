@@ -1,0 +1,37 @@
+meta {
+  name: Cadastro - Cliente (sucesso)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Maria Cliente",
+    "login": "maria.cliente",
+    "email": "maria@cliente.com",
+    "password": "senha123",
+    "role": "CUSTOMER",
+    "address": {
+      "street": "Av. Paulista",
+      "number": "900",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01310-200"
+    }
+  }
+}
+
+tests {
+  test("status 201", function() {
+    expect(res.status).to.equal(201);
+  });
+  test("role é CUSTOMER", function() {
+    expect(res.body.role).to.equal("CUSTOMER");
+  });
+}

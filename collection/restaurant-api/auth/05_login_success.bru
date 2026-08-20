@@ -1,0 +1,36 @@
+meta {
+  name: Login - Sucesso
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "joao@restaurante.com",
+    "password": "senha123"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("token", res.body.token);
+  }
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("retorna token JWT", function() {
+    expect(res.body.token).to.be.a("string");
+  });
+  test("email correto no retorno", function() {
+    expect(res.body.email).to.equal("joao@restaurante.com");
+  });
+}

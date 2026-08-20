@@ -1,0 +1,29 @@
+meta {
+  name: Exclusão - Remover minha conta
+  type: http
+  seq: 16
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/users/me
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:post-response {
+  if (res.status === 204) {
+    bru.setEnvVar("token", "");
+  }
+}
+
+tests {
+  test("status 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("mensagem de sucesso", function() {
+    expect(res.body.message).to.equal("Conta removida com sucesso");
+  });
+}
