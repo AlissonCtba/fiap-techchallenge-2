@@ -1,0 +1,3087 @@
+{
+  "info": {
+    "name": "restaurant-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "Cadastro - Dono de restaurante (sucesso)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Restaurante\",\n  \"login\": \"joao.owner\",\n  \"email\": \"joao@restaurante.com\",\n  \"password\": \"senha123\",\n  \"userTypeId\": 1,\n  \"address\": {\n    \"street\": \"Rua das Flores\",\n    \"number\": \"123\",\n    \"complement\": \"Sala 1\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-100\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"token\", pm.response.body.token);",
+                  "}",
+                  "",
+                  "// Tests",
+                  "pm.test(\"status 201\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(201);",
+                  "});",
+                  "pm.test(\"retorna token\", function() {",
+                  "  pm.expect(pm.response.body.token).to.be.a(\"string\");",
+                  "});",
+                  "pm.test(\"role é OWNER\", function() {",
+                  "  pm.expect(pm.response.body.role).to.equal(\"OWNER\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cadastro - Cliente (sucesso)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Maria Cliente\",\n  \"login\": \"maria.cliente\",\n  \"email\": \"maria@cliente.com\",\n  \"password\": \"senha123\",\n  \"userTypeId\": 2,\n  \"address\": {\n    \"street\": \"Av. Paulista\",\n    \"number\": \"900\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-200\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"customerToken\", pm.response.body.token);",
+                  "}",
+                  "",
+                  "// Tests",
+                  "pm.test(\"status 201\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(201);",
+                  "});",
+                  "pm.test(\"role é CUSTOMER\", function() {",
+                  "  pm.expect(pm.response.body.role).to.equal(\"CUSTOMER\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cadastro - E-mail duplicado (erro 409)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Duplicado\",\n  \"login\": \"joao.dup\",\n  \"email\": \"joao@restaurante.com\",\n  \"password\": \"senha123\",\n  \"userTypeId\": 1,\n  \"address\": {\n    \"street\": \"Rua X\",\n    \"number\": \"1\",\n    \"city\": \"SP\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-000\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 409 Conflict\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(409);",
+                  "});",
+                  "pm.test(\"RFC 7807 - title presente\", function() {",
+                  "  pm.expect(pm.response.body.title).to.be.a(\"string\");",
+                  "});",
+                  "pm.test(\"RFC 7807 - detail presente\", function() {",
+                  "  pm.expect(pm.response.body.detail).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cadastro - Campos obrigatórios faltando (erro 400)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"semcampos@teste.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 400 Bad Request\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(400);",
+                  "});",
+                  "pm.test(\"RFC 7807 - fields com erros\", function() {",
+                  "  pm.expect(pm.response.body.fields).to.be.an(\"object\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login - Sucesso",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"joao@restaurante.com\",\n  \"password\": \"senha123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.environment.set(\"token\", pm.response.body.token);",
+                  "}",
+                  "",
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"retorna token JWT\", function() {",
+                  "  pm.expect(pm.response.body.token).to.be.a(\"string\");",
+                  "});",
+                  "pm.test(\"email correto no retorno\", function() {",
+                  "  pm.expect(pm.response.body.email).to.equal(\"joao@restaurante.com\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login - Senha incorreta (erro 401)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"joao@restaurante.com\",\n  \"password\": \"senhaerrada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 401 Unauthorized\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(401);",
+                  "});",
+                  "pm.test(\"RFC 7807 - title presente\", function() {",
+                  "  pm.expect(pm.response.body.title).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login - Usuário não cadastrado (erro 401)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"naoexiste@teste.com\",\n  \"password\": \"qualquersenha\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 401 Unauthorized\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cadastro - Tipo de usuário inválido para registro (422)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Carlos Gerente\",\n  \"login\": \"carlos.gerente\",\n  \"email\": \"carlos@gerente.com\",\n  \"password\": \"senha123\",\n  \"userTypeId\": {{invalidTypeId}},\n  \"address\": {\n    \"street\": \"Rua B\",\n    \"number\": \"10\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-000\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 422 - tipo inválido para registro\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(422);",
+                  "});",
+                  "pm.test(\"detalhe menciona tipos válidos\", function() {",
+                  "  pm.expect(pm.response.body.detail).to.include(\"OWNER\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "demo",
+      "item": [
+        {
+          "name": "\"[DEMO] 0a. Login como OWNER\"",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "ROTEIRO: Use este request para logar como dono do restaurante.\nO token é salvo automaticamente em {{token}}.\nPré-requisito: ter executado o request 03 (registrar dono) antes.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"joao@restaurante.com\",\n  \"password\": \"senha123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.environment.set(\"token\", pm.response.body.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "\"[DEMO] 0b. Login como CUSTOMER\"",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "ROTEIRO: Use este request para logar como cliente.\nO token é salvo em {{customerToken}}.\nPré-requisito: ter executado o request 04 (registrar cliente) antes.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"maria@cliente.com\",\n  \"password\": \"senha123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.environment.set(\"customerToken\", pm.response.body.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "\"[DEMO] 1. Listar tipos de usuário existentes\"",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "ROTEIRO: Mostra que já existem os tipos OWNER e CUSTOMER criados pelo init.sql.\nExplica que UserType é uma entidade gerenciável — pode criar novos tipos,\nmas só OWNER e CUSTOMER podem ser associados a usuários.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 2. Criar novo tipo de usuário\"",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Demonstra o CRUD de tipos — cria um tipo chamado PARCEIRO.\nMostra que qualquer nome é aceito no cadastro, mas apenas OWNER e CUSTOMER\npodem ser usados para registrar usuários (valida regra de negócio).",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"PARCEIRO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 3. Registrar dono de restaurante\"",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "ROTEIRO: Registra um usuário do tipo OWNER (id=1).\nO token é salvo automaticamente na variável de ambiente.\nMostrar no response que o campo userType retorna o objeto com id e name.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Silva\",\n  \"login\": \"joao.owner\",\n  \"email\": \"joao@restaurante.com\",\n  \"password\": \"senha123\",\n  \"userTypeId\": 1,\n  \"address\": {\n    \"street\": \"Rua das Flores\",\n    \"number\": \"123\",\n    \"complement\": \"Sala 1\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-100\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"token\", pm.response.body.token);",
+                  "  pm.environment.set(\"ownerEmail\", pm.response.body.email);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "\"[DEMO] 4. Registrar cliente\"",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "ROTEIRO: Registra um usuário do tipo CUSTOMER (id=2).\nSalva o token do cliente para demonstrar restrições de acesso.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Maria Cliente\",\n  \"login\": \"maria.cliente\",\n  \"email\": \"maria@cliente.com\",\n  \"password\": \"senha123\",\n  \"userTypeId\": 2,\n  \"address\": {\n    \"street\": \"Av. Paulista\",\n    \"number\": \"900\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-200\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"customerToken\", pm.response.body.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "\"[DEMO] 5. Criar restaurante (como OWNER)\"",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Cria um restaurante usando o token do OWNER.\nDestacar os campos: nome, endereço completo, tipo de cozinha, horário.\nO dono é inferido automaticamente pelo token JWT.\nSalva o id do restaurante para os próximos requests.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cantina do João\",\n  \"address\": {\n    \"street\": \"Av. Paulista\",\n    \"number\": \"1000\",\n    \"complement\": \"Loja 5\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-100\"\n  },\n  \"cuisineType\": \"Italiana\",\n  \"openingTime\": \"11:00:00\",\n  \"closingTime\": \"23:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"restaurantId\", pm.response.body.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "\"[DEMO] 6. CUSTOMER não pode criar restaurante (403)\"",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Demonstra controle de acesso — CUSTOMER recebe 403.\nMostra que apenas OWNER pode gerenciar restaurantes.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lanchonete\",\n  \"address\": {\n    \"street\": \"Rua B\",\n    \"number\": \"1\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-000\"\n  },\n  \"cuisineType\": \"Fast Food\",\n  \"openingTime\": \"08:00:00\",\n  \"closingTime\": \"20:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 7. Listar restaurantes\"",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "ROTEIRO: Lista todos os restaurantes com paginação.\nQualquer usuário autenticado pode consultar.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 8. Buscar restaurante por tipo de cozinha\"",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "ROTEIRO: Busca restaurantes por tipo de cozinha.\nÚtil para clientes que querem escolher pelo tipo de comida.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/search/cuisine?cuisineType=Italiana",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "search",
+                "cuisine?cuisineType=Italiana"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 9. Adicionar item ao cardápio\"",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Adiciona item ao cardápio do restaurante.\nDestacar todos os campos: nome, descrição, preço, dineInOnly, photoPath.\ndineInOnly=false significa que pode pedir para delivery também.\nphotoPath é o caminho onde a foto estaria armazenada.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lasanha Bolonhesa\",\n  \"description\": \"Lasanha tradicional com molho bolonhesa e queijo gratinado\",\n  \"price\": 45.90,\n  \"dineInOnly\": false,\n  \"photoPath\": \"/images/lasanha-bolonhesa.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"menuItemId\", pm.response.body.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "\"[DEMO] 10. Adicionar item apenas para consumo no local\"",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Demonstra o campo dineInOnly=true — disponível apenas no restaurante.\nÚtil para pratos que não viajam bem (sobremesas, pratos quentes delicados).",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tiramisù\",\n  \"description\": \"Sobremesa italiana clássica com mascarpone e café\",\n  \"price\": 22.00,\n  \"dineInOnly\": true,\n  \"photoPath\": \"/images/tiramisu.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 11. Listar cardápio do restaurante\"",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "ROTEIRO: Lista todos os itens do cardápio do restaurante.\nMostra os dois itens criados — lasanha (dineInOnly=false) e tiramisù (dineInOnly=true).",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 12. Atualizar item do cardápio\"",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Atualiza o primeiro item — preço e descrição novos.\nDemonstra o U do CRUD de cardápio.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu/{{menuItemId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu",
+                "{{menuItemId}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lasanha Bolonhesa Premium\",\n  \"description\": \"Lasanha premium com molho bolonhesa artesanal, queijo gratinado e trufas\",\n  \"price\": 59.90,\n  \"dineInOnly\": false,\n  \"photoPath\": \"/images/lasanha-premium.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 13. Atualizar restaurante\"",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Atualiza nome, tipo de cozinha e horário do restaurante.\nDemonstra o U do CRUD de restaurante.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cantina do João - Ristorante\",\n  \"address\": {\n    \"street\": \"Av. Paulista\",\n    \"number\": \"1000\",\n    \"complement\": \"Loja 5\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-100\"\n  },\n  \"cuisineType\": \"Italiana Contemporânea\",\n  \"openingTime\": \"12:00:00\",\n  \"closingTime\": \"23:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 14. Buscar restaurante por ID (confirma atualização)\"",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "ROTEIRO: Busca o restaurante pelo ID para confirmar as atualizações.\nMostra nome e tipo de cozinha já atualizados.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 15. Remover item do cardápio\"",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Remove o item do cardápio (Lasanha).\nDemonstra o D do CRUD de cardápio.\nApós executar, liste o cardápio novamente (request 11) para confirmar.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu/{{menuItemId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu",
+                "{{menuItemId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 16. Remover restaurante\"",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Remove o restaurante.\nDemonstra o D do CRUD de restaurante.\nPor CASCADE, os itens do cardápio são removidos junto.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 17. Atualizar tipo de usuário\"",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Atualiza o tipo PARCEIRO criado no request 02.\nSalve o id do tipo PARCEIRO na variável {{userTypeId}} manualmente\nou pegue do response do request 02.\nDemonstra o U do CRUD de tipos de usuário.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types/{{userTypeId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types",
+                "{{userTypeId}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"PARCEIRO_ATUALIZADO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "\"[DEMO] 18. Remover tipo de usuário\"",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "ROTEIRO: Remove o tipo PARCEIRO.\nOWNER e CUSTOMER não podem ser removidos pois estão em uso por usuários.\nDemonstra o D do CRUD de tipos de usuário.",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types/{{userTypeId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types",
+                "{{userTypeId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ],
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "menu",
+      "item": [
+        {
+          "name": "Cardápio - Criar item (sucesso)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lasanha Bolonhesa\",\n  \"description\": \"Lasanha tradicional com molho bolonhesa e queijo gratinado\",\n  \"price\": 45.90,\n  \"dineInOnly\": false,\n  \"photoPath\": \"/images/lasanha-bolonhesa.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"menuItemId\", pm.response.body.id);",
+                  "}",
+                  "",
+                  "// Tests",
+                  "pm.test(\"status 201\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(201);",
+                  "});",
+                  "pm.test(\"retorna id\", function() {",
+                  "  pm.expect(pm.response.body.id).to.be.a(\"number\");",
+                  "});",
+                  "pm.test(\"nome correto\", function() {",
+                  "  pm.expect(pm.response.body.name).to.equal(\"Lasanha Bolonhesa\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cardápio - Criar item sem nome (inválido)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"price\": -5.00,\n  \"dineInOnly\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 400\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cardápio - Listar itens",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"retorna página\", function() {",
+                  "  pm.expect(pm.response.body.content).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cardápio - Buscar item por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu/{{menuItemId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu",
+                "{{menuItemId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cardápio - Atualizar item",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu/{{menuItemId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu",
+                "{{menuItemId}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lasanha Bolonhesa Premium\",\n  \"description\": \"Lasanha tradicional com molho bolonhesa, queijo gratinado e trufas\",\n  \"price\": 59.90,\n  \"dineInOnly\": true,\n  \"photoPath\": \"/images/lasanha-premium.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"preço atualizado\", function() {",
+                  "  pm.expect(pm.response.body.price).to.equal(59.90);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cardápio - Remover item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu/{{menuItemId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}",
+                "menu",
+                "{{menuItemId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 204\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "restaurants",
+      "item": [
+        {
+          "name": "Restaurante - Criar (sucesso)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cantina do João\",\n  \"address\": {\n    \"street\": \"Av. Paulista\",\n    \"number\": \"1000\",\n    \"complement\": \"Loja 5\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-100\"\n  },\n  \"cuisineType\": \"Italiana\",\n  \"openingTime\": \"11:00:00\",\n  \"closingTime\": \"23:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"restaurantId\", pm.response.body.id);",
+                  "}",
+                  "",
+                  "// Tests",
+                  "pm.test(\"status 201\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(201);",
+                  "});",
+                  "pm.test(\"retorna id\", function() {",
+                  "  pm.expect(pm.response.body.id).to.be.a(\"number\");",
+                  "});",
+                  "pm.test(\"nome correto\", function() {",
+                  "  pm.expect(pm.response.body.name).to.equal(\"Cantina do João\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Restaurante - Criar como CUSTOMER (proibido)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lanchonete\",\n  \"address\": {\n    \"street\": \"Rua A\",\n    \"number\": \"1\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-100\"\n  },\n  \"cuisineType\": \"Fast Food\",\n  \"openingTime\": \"08:00:00\",\n  \"closingTime\": \"20:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 403\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Restaurante - Listar todos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"retorna página\", function() {",
+                  "  pm.expect(pm.response.body.content).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Restaurante - Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"id correto\", function() {",
+                  "  pm.expect(pm.response.body.id).to.equal(pm.environment.get(\"restaurantId\"));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Restaurante - Buscar ID inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/999999",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "999999"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 404\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Restaurante - Buscar por nome",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/search/name?name=Cantina",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "search",
+                "name?name=Cantina"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"retorna resultados\", function() {",
+                  "  pm.expect(pm.response.body.content.length).to.be.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Restaurante - Atualizar",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cantina do João - Atualizada\",\n  \"address\": {\n    \"street\": \"Av. Paulista\",\n    \"number\": \"1000\",\n    \"complement\": \"Loja 6\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-100\"\n  },\n  \"cuisineType\": \"Italiana Moderna\",\n  \"openingTime\": \"12:00:00\",\n  \"closingTime\": \"22:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"nome atualizado\", function() {",
+                  "  pm.expect(pm.response.body.name).to.equal(\"Cantina do João - Atualizada\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Restaurante - Remover",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/restaurants/{{restaurantId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "restaurants",
+                "{{restaurantId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 204\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "user-types",
+      "item": [
+        {
+          "name": "Tipo de Usuário - Criar OWNER",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"OWNER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"ownerTypeId\", pm.response.body.id);",
+                  "}",
+                  "",
+                  "// Tests",
+                  "pm.test(\"status 201\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(201);",
+                  "});",
+                  "pm.test(\"nome correto\", function() {",
+                  "  pm.expect(pm.response.body.name).to.equal(\"OWNER\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tipo de Usuário - Criar CUSTOMER",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"CUSTOMER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"customerTypeId\", pm.response.body.id);",
+                  "}",
+                  "",
+                  "// Tests",
+                  "pm.test(\"status 201\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tipo de Usuário - Criar duplicado (conflito)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"OWNER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 409\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tipo de Usuário - Listar todos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"retorna lista\", function() {",
+                  "  pm.expect(pm.response.body).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tipo de Usuário - Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types/{{ownerTypeId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types",
+                "{{ownerTypeId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tipo de Usuário - Atualizar",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types/{{ownerTypeId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types",
+                "{{ownerTypeId}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"RESTAURANT_OWNER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"nome atualizado\", function() {",
+                  "  pm.expect(pm.response.body.name).to.equal(\"RESTAURANT_OWNER\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tipo de Usuário - Remover",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types/{{ownerTypeId}}",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types",
+                "{{ownerTypeId}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 204\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tipo de Usuário - Criar tipo inválido para registro",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-types",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-types"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"GERENTE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set(\"invalidTypeId\", pm.response.body.id);",
+                  "}",
+                  "",
+                  "// Tests",
+                  "pm.test(\"status 201 - tipo criado com sucesso\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "users",
+      "item": [
+        {
+          "name": "Perfil - Buscar meu perfil",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"retorna id e email\", function() {",
+                  "  pm.expect(pm.response.body.id).to.be.a(\"number\");",
+                  "  pm.expect(pm.response.body.email).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Perfil - Sem token (erro 401/403)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 401 ou 403 sem token\", function() {",
+                  "  pm.expect([401, 403]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Atualização - Dados do usuário (sucesso)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Atualizado\",\n  \"login\": \"joao.owner\",\n  \"email\": \"joao@restaurante.com\",\n  \"address\": {\n    \"street\": \"Rua Nova\",\n    \"number\": \"456\",\n    \"city\": \"Campinas\",\n    \"state\": \"SP\",\n    \"zipCode\": \"13010-000\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"nome atualizado\", function() {",
+                  "  pm.expect(pm.response.body.name).to.equal(\"João Atualizado\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Atualização - E-mail já em uso (erro 409)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"João Restaurante\",\n  \"login\": \"joao.owner\",\n  \"email\": \"maria@cliente.com\",\n  \"address\": {\n    \"street\": \"Rua X\",\n    \"number\": \"1\",\n    \"city\": \"SP\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310-000\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 409 Conflict\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(409);",
+                  "});",
+                  "pm.test(\"RFC 7807 - title presente\", function() {",
+                  "  pm.expect(pm.response.body.title).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Senha - Alteração com sucesso",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/password",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "password"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"senha123\",\n  \"newPassword\": \"novaSenha456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200 OK\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"mensagem de sucesso\", function() {",
+                  "  pm.expect(pm.response.body.message).to.equal(\"Senha alterada com sucesso\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Senha - Senha antiga incorreta (erro 401)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/password",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "password"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"senhaerrada\",\n  \"newPassword\": \"qualquerCoisa123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 401 Unauthorized\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(401);",
+                  "});",
+                  "pm.test(\"RFC 7807 - detail presente\", function() {",
+                  "  pm.expect(pm.response.body.detail).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Busca - Usuários por nome (com paginação)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/search?name=jo&page=0&size=5",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "search?name=jo&page=0&size=5"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"retorna estrutura paginada\", function() {",
+                  "  pm.expect(pm.response.body.content).to.be.an(\"array\");",
+                  "  pm.expect(pm.response.body.page.totalElements).to.be.a(\"number\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Busca - Nome sem resultado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/search?name=xyzabcnaoexiste&page=0&size=5",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "search?name=xyzabcnaoexiste&page=0&size=5"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "// Tests",
+                  "pm.test(\"status 200\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"lista vazia\", function() {",
+                  "  pm.expect(pm.response.body.content).to.be.an(\"array\").that.is.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Exclusão - Remover minha conta",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ],
+              "query": [],
+              "variable": []
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "if (pm.response.code === 204) {",
+                  "  pm.environment.set(\"token\", \"\");",
+                  "}",
+                  "",
+                  "// Tests",
+                  "pm.test(\"status 200 OK\", function() {",
+                  "  pm.expect(pm.response.code).to.equal(200);",
+                  "});",
+                  "pm.test(\"mensagem de sucesso\", function() {",
+                  "  pm.expect(pm.response.body.message).to.equal(\"Conta removida com sucesso\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "auth": {
+        "type": "noauth"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "invalidTypeId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "customerToken",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "restaurantId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "menuItemId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "userTypeId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "ownerTypeId",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
