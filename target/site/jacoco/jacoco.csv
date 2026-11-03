@@ -12,7 +12,7 @@ restaurant-api,com.restaurant.exception,LoginAlreadyExistsException,0,4,0,0,0,2,
 restaurant-api,com.restaurant.exception,GlobalExceptionHandler,18,195,0,0,5,54,1,11,1,11
 restaurant-api,com.restaurant.security,JwtAuthFilter,0,70,3,7,0,19,3,3,0,1
 restaurant-api,com.restaurant.security,UserPrincipal,3,26,0,0,1,7,1,7,1,7
-restaurant-api,com.restaurant.security,SecurityConfig,0,75,0,0,0,16,0,6,0,6
+restaurant-api,com.restaurant.security,SecurityConfig,0,97,0,0,0,18,0,6,0,6
 restaurant-api,com.restaurant.security,JwtService,1,75,2,2,0,17,2,7,0,7
 restaurant-api,com.restaurant.security,UserDetailsServiceImpl,6,11,0,0,0,3,1,1,1,1
 restaurant-api,com.restaurant.restaurant,RestaurantController,0,54,0,0,0,9,0,7,0,7
@@ -22,7 +22,8 @@ restaurant-api,com.restaurant.user,UserController.MessageResponse,0,6,0,0,0,1,0,
 restaurant-api,com.restaurant.user,UserRole,0,15,0,0,0,3,0,1,0,1
 restaurant-api,com.restaurant.user,UserService,0,139,2,8,0,27,2,10,0,7
 restaurant-api,com.restaurant.user,UserController,0,45,0,0,0,7,0,5,0,5
-restaurant-api,com.restaurant.auth,AuthService,0,135,0,2,0,26,0,5,0,4
+restaurant-api,com.restaurant.auth,AuthMapper,0,48,0,0,0,13,0,3,0,3
+restaurant-api,com.restaurant.auth,AuthService,0,94,0,2,0,14,0,4,0,3
 restaurant-api,com.restaurant.auth,EmailAlreadyExistsException,0,4,0,0,0,2,0,1,0,1
 restaurant-api,com.restaurant.auth,AuthController,0,14,0,0,0,2,0,2,0,2
 restaurant-api,com.restaurant.usertype.dto,UserTypeResponse,0,17,0,0,0,2,0,2,0,2

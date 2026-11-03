@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.restaurant.usertype.UserTypeControllerIT
 -------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.234 s -- in com.restaurant.usertype.UserTypeControllerIT
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.319 s -- in com.restaurant.usertype.UserTypeControllerIT

@@ -1,5 +1,6 @@
 /app/src/main/java/com/restaurant/RestaurantApplication.java
 /app/src/main/java/com/restaurant/auth/AuthController.java
+/app/src/main/java/com/restaurant/auth/AuthMapper.java
 /app/src/main/java/com/restaurant/auth/AuthService.java
 /app/src/main/java/com/restaurant/auth/EmailAlreadyExistsException.java
 /app/src/main/java/com/restaurant/auth/dto/AuthResponse.java

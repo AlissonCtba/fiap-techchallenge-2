@@ -1,4 +1,5 @@
 /app/src/test/java/com/restaurant/auth/AuthControllerIT.java
+/app/src/test/java/com/restaurant/auth/AuthMapperTest.java
 /app/src/test/java/com/restaurant/auth/AuthServiceTest.java
 /app/src/test/java/com/restaurant/exception/GlobalExceptionHandlerIT.java
 /app/src/test/java/com/restaurant/menu/MenuItemControllerIT.java

@@ -31,30 +31,35 @@ public class SecurityConfig {
 <span class="fc" id="L31">                .authorizeHttpRequests(auth -&gt; auth</span>
 <span class="fc" id="L32">                        .requestMatchers(&quot;/api/v1/auth/**&quot;).permitAll()</span>
 <span class="fc" id="L33">                        .requestMatchers(&quot;/swagger-ui/**&quot;, &quot;/v3/api-docs/**&quot;, &quot;/swagger-ui.html&quot;).permitAll()</span>
-<span class="fc" id="L34">                        .anyRequest().authenticated()</span>
+<span class="fc" id="L34">                        .requestMatchers(org.springframework.http.HttpMethod.GET,</span>
+                                &quot;/api/v1/user-types&quot;,
+                                &quot;/api/v1/user-types/**&quot;,
+                                &quot;/api/v1/restaurants&quot;,
+<span class="fc" id="L38">                                &quot;/api/v1/restaurants/**&quot;).permitAll()</span>
+<span class="fc" id="L39">                        .anyRequest().authenticated()</span>
                 )
-<span class="fc" id="L36">                .sessionManagement(s -&gt; s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))</span>
-<span class="fc" id="L37">                .authenticationProvider(authenticationProvider())</span>
-<span class="fc" id="L38">                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)</span>
-<span class="fc" id="L39">                .build();</span>
+<span class="fc" id="L41">                .sessionManagement(s -&gt; s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))</span>
+<span class="fc" id="L42">                .authenticationProvider(authenticationProvider())</span>
+<span class="fc" id="L43">                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)</span>
+<span class="fc" id="L44">                .build();</span>
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-<span class="fc" id="L44">        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();</span>
-<span class="fc" id="L45">        provider.setUserDetailsService(userDetailsService);</span>
-<span class="fc" id="L46">        provider.setPasswordEncoder(passwordEncoder());</span>
-<span class="fc" id="L47">        return provider;</span>
+<span class="fc" id="L49">        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();</span>
+<span class="fc" id="L50">        provider.setUserDetailsService(userDetailsService);</span>
+<span class="fc" id="L51">        provider.setPasswordEncoder(passwordEncoder());</span>
+<span class="fc" id="L52">        return provider;</span>
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-<span class="fc" id="L52">        return config.getAuthenticationManager();</span>
+<span class="fc" id="L57">        return config.getAuthenticationManager();</span>
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-<span class="fc" id="L57">        return new BCryptPasswordEncoder();</span>
+<span class="fc" id="L62">        return new BCryptPasswordEncoder();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

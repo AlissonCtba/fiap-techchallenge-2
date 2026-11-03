@@ -109,11 +109,12 @@ class UserTypeControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void noToken_unauthorized() {
+    void noToken_returnsPublicList() {
         RestAssuredMockMvc.given()
                 .when()
                 .get("/api/v1/user-types")
                 .then()
-                .statusCode(403);
+                .statusCode(200)
+                .body("$", hasSize(greaterThanOrEqualTo(1)));
     }
 }

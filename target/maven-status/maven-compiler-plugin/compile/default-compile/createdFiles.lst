@@ -1,3 +1,4 @@
+com/restaurant/auth/AuthMapper.class
 com/restaurant/config/OpenApiConfig.class
 com/restaurant/usertype/InvalidUserTypeException.class
 com/restaurant/auth/dto/LoginRequest.class

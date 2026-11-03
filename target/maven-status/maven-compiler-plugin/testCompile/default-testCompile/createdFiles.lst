@@ -9,5 +9,6 @@ com/restaurant/auth/AuthServiceTest.class
 com/restaurant/restaurant/RestaurantControllerIT.class
 com/restaurant/exception/GlobalExceptionHandlerIT.class
 com/restaurant/restaurant/RestaurantServiceTest.class
+com/restaurant/auth/AuthMapperTest.class
 com/restaurant/usertype/UserTypeControllerIT.class
 com/restaurant/usertype/UserTypeServiceTest.class

@@ -8,75 +8,53 @@ import com.restaurant.security.UserPrincipal;
 import com.restaurant.user.User;
 import com.restaurant.user.UserRepository;
 import com.restaurant.user.UserRole;
-import com.restaurant.usertype.InvalidUserTypeException;
 import com.restaurant.usertype.UserType;
 import com.restaurant.usertype.UserTypeNotFoundException;
 import com.restaurant.usertype.UserTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Orquestra os fluxos de negócio de registro e login.
+ * Conversões e montagem de objetos são delegadas ao AuthMapper (SRP).
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
     private final UserTypeRepository userTypeRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final AuthMapper authMapper;
 
     public AuthResponse register(RegisterRequest request) {
-<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (userRepository.existsByEmail(request.email())) {</span>
-<span class="fc" id="L33">            throw new EmailAlreadyExistsException(&quot;E-mail já cadastrado: &quot; + request.email());</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (userRepository.existsByEmail(request.email())) {</span>
+<span class="fc" id="L35">            throw new EmailAlreadyExistsException(&quot;E-mail já cadastrado: &quot; + request.email());</span>
         }
 
-<span class="fc" id="L36">        UserType userType = userTypeRepository.findById(request.userTypeId())</span>
-<span class="fc" id="L37">                .orElseThrow(() -&gt; new UserTypeNotFoundException(</span>
-<span class="fc" id="L38">                        &quot;Tipo de usuário não encontrado: &quot; + request.userTypeId()));</span>
+<span class="fc" id="L38">        UserType userType = userTypeRepository.findById(request.userTypeId())</span>
+<span class="fc" id="L39">                .orElseThrow(() -&gt; new UserTypeNotFoundException(</span>
+<span class="fc" id="L40">                        &quot;Tipo de usuário não encontrado: &quot; + request.userTypeId()));</span>
 
-        // Infere o enum de role pelo nome do tipo para manter a lógica de segurança
-<span class="fc" id="L41">        UserRole role = resolveRole(userType.getName());</span>
+<span class="fc" id="L42">        UserRole role = authMapper.resolveRole(userType.getName());</span>
+<span class="fc" id="L43">        User user = userRepository.save(authMapper.toUser(request, userType, role));</span>
+<span class="fc" id="L44">        String token = jwtService.generateToken(new UserPrincipal(user));</span>
 
-<span class="fc" id="L43">        User user = User.builder()</span>
-<span class="fc" id="L44">                .name(request.name())</span>
-<span class="fc" id="L45">                .login(request.login())</span>
-<span class="fc" id="L46">                .email(request.email())</span>
-<span class="fc" id="L47">                .password(passwordEncoder.encode(request.password()))</span>
-<span class="fc" id="L48">                .role(role)</span>
-<span class="fc" id="L49">                .userType(userType)</span>
-<span class="fc" id="L50">                .address(request.address())</span>
-<span class="fc" id="L51">                .build();</span>
-
-<span class="fc" id="L53">        userRepository.save(user);</span>
-
-<span class="fc" id="L55">        String token = jwtService.generateToken(new UserPrincipal(user));</span>
-<span class="fc" id="L56">        return new AuthResponse(token, user.getEmail(), user.getName(), user.getRole(), userType);</span>
+<span class="fc" id="L46">        return authMapper.toAuthResponse(user, token);</span>
     }
 
     public AuthResponse login(LoginRequest request) {
-<span class="fc" id="L60">        authenticationManager.authenticate(</span>
-<span class="fc" id="L61">                new UsernamePasswordAuthenticationToken(request.email(), request.password())</span>
+<span class="fc" id="L50">        authenticationManager.authenticate(</span>
+<span class="fc" id="L51">                new UsernamePasswordAuthenticationToken(request.email(), request.password())</span>
         );
 
-<span class="fc" id="L64">        User user = userRepository.findByEmail(request.email()).orElseThrow();</span>
+<span class="fc" id="L54">        User user = userRepository.findByEmail(request.email()).orElseThrow();</span>
+<span class="fc" id="L55">        String token = jwtService.generateToken(new UserPrincipal(user));</span>
 
-<span class="fc" id="L66">        String token = jwtService.generateToken(new UserPrincipal(user));</span>
-<span class="fc" id="L67">        return new AuthResponse(token, user.getEmail(), user.getName(), user.getRole(), user.getUserType());</span>
-    }
-
-    /**
-     * Mapeia o nome do UserType para o enum UserRole.
-     * Tipos com nomes fora do enum existem no cadastro mas não podem ser associados a usuários.
-     */
-    private UserRole resolveRole(String typeName) {
-        try {
-<span class="fc" id="L76">            return UserRole.valueOf(typeName.toUpperCase());</span>
-<span class="fc" id="L77">        } catch (IllegalArgumentException e) {</span>
-<span class="fc" id="L78">            throw new InvalidUserTypeException(typeName);</span>
-        }
+<span class="fc" id="L57">        return authMapper.toAuthResponse(user, token);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
