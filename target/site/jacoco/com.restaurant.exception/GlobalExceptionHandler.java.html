@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">restaurant-api</a> &gt; <a href="index.source.html" class="el_package">com.restaurant.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.restaurant.exception;
+
+import com.restaurant.auth.EmailAlreadyExistsException;
+import com.restaurant.exception.LoginAlreadyExistsException;
+import com.restaurant.menu.MenuItemNotFoundException;
+import com.restaurant.restaurant.RestaurantNotFoundException;
+import com.restaurant.usertype.UserTypeAlreadyExistsException;
+import com.restaurant.usertype.UserTypeNotFoundException;
+import com.restaurant.usertype.InvalidUserTypeException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.net.URI;
+import java.time.Instant;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@RestControllerAdvice
+<span class="fc" id="L25">public class GlobalExceptionHandler {</span>
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ProblemDetail handleEmailAlreadyExists(EmailAlreadyExistsException ex) {
+<span class="fc" id="L29">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());</span>
+<span class="fc" id="L30">        problem.setTitle(&quot;E-mail já cadastrado&quot;);</span>
+<span class="fc" id="L31">        problem.setType(URI.create(&quot;/errors/email-already-exists&quot;));</span>
+<span class="fc" id="L32">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="fc" id="L33">        return problem;</span>
+    }
+
+    @ExceptionHandler(LoginAlreadyExistsException.class)
+    public ProblemDetail handleLoginAlreadyExists(LoginAlreadyExistsException ex) {
+<span class="fc" id="L38">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());</span>
+<span class="fc" id="L39">        problem.setTitle(&quot;Login já está em uso&quot;);</span>
+<span class="fc" id="L40">        problem.setType(URI.create(&quot;/errors/login-already-exists&quot;));</span>
+<span class="fc" id="L41">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="fc" id="L42">        return problem;</span>
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ProblemDetail handleUserNotFound(UserNotFoundException ex) {
+<span class="nc" id="L47">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());</span>
+<span class="nc" id="L48">        problem.setTitle(&quot;Usuário não encontrado&quot;);</span>
+<span class="nc" id="L49">        problem.setType(URI.create(&quot;/errors/user-not-found&quot;));</span>
+<span class="nc" id="L50">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="nc" id="L51">        return problem;</span>
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ProblemDetail handleBadCredentials(BadCredentialsException ex) {
+<span class="fc" id="L56">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, &quot;E-mail ou senha inválidos&quot;);</span>
+<span class="fc" id="L57">        problem.setTitle(&quot;Credenciais inválidas&quot;);</span>
+<span class="fc" id="L58">        problem.setType(URI.create(&quot;/errors/invalid-credentials&quot;));</span>
+<span class="fc" id="L59">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="fc" id="L60">        return problem;</span>
+    }
+
+    @ExceptionHandler(InvalidUserTypeException.class)
+    public ProblemDetail handleInvalidUserType(InvalidUserTypeException ex) {
+<span class="fc" id="L65">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());</span>
+<span class="fc" id="L66">        problem.setTitle(&quot;Tipo de usuário inválido para registro&quot;);</span>
+<span class="fc" id="L67">        problem.setType(URI.create(&quot;/errors/invalid-user-type&quot;));</span>
+<span class="fc" id="L68">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="fc" id="L69">        return problem;</span>
+    }
+
+    @ExceptionHandler(UserTypeNotFoundException.class)
+    public ProblemDetail handleUserTypeNotFound(UserTypeNotFoundException ex) {
+<span class="fc" id="L74">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());</span>
+<span class="fc" id="L75">        problem.setTitle(&quot;Tipo de usuário não encontrado&quot;);</span>
+<span class="fc" id="L76">        problem.setType(URI.create(&quot;/errors/user-type-not-found&quot;));</span>
+<span class="fc" id="L77">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="fc" id="L78">        return problem;</span>
+    }
+
+    @ExceptionHandler(UserTypeAlreadyExistsException.class)
+    public ProblemDetail handleUserTypeAlreadyExists(UserTypeAlreadyExistsException ex) {
+<span class="fc" id="L83">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());</span>
+<span class="fc" id="L84">        problem.setTitle(&quot;Tipo de usuário já existe&quot;);</span>
+<span class="fc" id="L85">        problem.setType(URI.create(&quot;/errors/user-type-already-exists&quot;));</span>
+<span class="fc" id="L86">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="fc" id="L87">        return problem;</span>
+    }
+
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    public ProblemDetail handleRestaurantNotFound(RestaurantNotFoundException ex) {
+<span class="fc" id="L92">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());</span>
+<span class="fc" id="L93">        problem.setTitle(&quot;Restaurante não encontrado&quot;);</span>
+<span class="fc" id="L94">        problem.setType(URI.create(&quot;/errors/restaurant-not-found&quot;));</span>
+<span class="fc" id="L95">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="fc" id="L96">        return problem;</span>
+    }
+
+    @ExceptionHandler(MenuItemNotFoundException.class)
+    public ProblemDetail handleMenuItemNotFound(MenuItemNotFoundException ex) {
+<span class="fc" id="L101">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());</span>
+<span class="fc" id="L102">        problem.setTitle(&quot;Item do cardápio não encontrado&quot;);</span>
+<span class="fc" id="L103">        problem.setType(URI.create(&quot;/errors/menu-item-not-found&quot;));</span>
+<span class="fc" id="L104">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="fc" id="L105">        return problem;</span>
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ProblemDetail handleAccessDenied(AccessDeniedException ex) {
+<span class="fc" id="L110">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());</span>
+<span class="fc" id="L111">        problem.setTitle(&quot;Acesso negado&quot;);</span>
+<span class="fc" id="L112">        problem.setType(URI.create(&quot;/errors/access-denied&quot;));</span>
+<span class="fc" id="L113">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="fc" id="L114">        return problem;</span>
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleValidation(MethodArgumentNotValidException ex) {
+<span class="fc" id="L119">        Map&lt;String, String&gt; fields = ex.getBindingResult().getFieldErrors().stream()</span>
+<span class="fc" id="L120">                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));</span>
+
+<span class="fc" id="L122">        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, &quot;Um ou mais campos são inválidos&quot;);</span>
+<span class="fc" id="L123">        problem.setTitle(&quot;Erro de validação&quot;);</span>
+<span class="fc" id="L124">        problem.setType(URI.create(&quot;/errors/validation-error&quot;));</span>
+<span class="fc" id="L125">        problem.setProperty(&quot;timestamp&quot;, Instant.now());</span>
+<span class="fc" id="L126">        problem.setProperty(&quot;fields&quot;, fields);</span>
+<span class="fc" id="L127">        return problem;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

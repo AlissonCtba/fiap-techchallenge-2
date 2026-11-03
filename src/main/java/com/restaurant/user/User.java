@@ -1,5 +1,6 @@
 package com.restaurant.user;
 
+import com.restaurant.usertype.UserType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -46,6 +47,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_type_id", nullable = false)
+    private UserType userType;
 
     @Embedded
     private Address address;

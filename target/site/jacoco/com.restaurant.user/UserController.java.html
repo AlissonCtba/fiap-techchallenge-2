@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">restaurant-api</a> &gt; <a href="index.source.html" class="el_package">com.restaurant.user</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">package com.restaurant.user;
+
+import com.restaurant.security.UserPrincipal;
+import com.restaurant.user.dto.ChangePasswordRequest;
+import com.restaurant.user.dto.UpdateUserRequest;
+import com.restaurant.user.dto.UserResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(&quot;/api/v1/users&quot;)
+@RequiredArgsConstructor
+@Tag(name = &quot;Usuários&quot;, description = &quot;Gerenciamento de usuários&quot;)
+@SecurityRequirement(name = &quot;bearerAuth&quot;)
+public class UserController {
+
+    private final UserService userService;
+
+    @Operation(summary = &quot;Buscar meu perfil&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Perfil retornado&quot;),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Não autenticado&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @GetMapping(&quot;/me&quot;)
+    public ResponseEntity&lt;UserResponse&gt; getProfile(@AuthenticationPrincipal UserPrincipal principal) {
+<span class="fc" id="L41">        return ResponseEntity.ok(userService.getProfile(principal.getUsername()));</span>
+    }
+
+    @Operation(summary = &quot;Atualizar dados do usuário (exceto senha)&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Atualizado com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Dados inválidos&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;E-mail ou login já em uso&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @PatchMapping(&quot;/me&quot;)
+    public ResponseEntity&lt;UserResponse&gt; updateUser(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody UpdateUserRequest request) {
+<span class="fc" id="L56">        return ResponseEntity.ok(userService.updateUser(principal.getUsername(), request));</span>
+    }
+
+    @Operation(summary = &quot;Alterar senha&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Senha alterada com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Senha atual incorreta&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @PatchMapping(&quot;/me/password&quot;)
+    public ResponseEntity&lt;MessageResponse&gt; changePassword(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody ChangePasswordRequest request) {
+<span class="fc" id="L69">        userService.changePassword(principal.getUsername(), request);</span>
+<span class="fc" id="L70">        return ResponseEntity.ok(new MessageResponse(&quot;Senha alterada com sucesso&quot;));</span>
+    }
+
+    @Operation(summary = &quot;Remover minha conta&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Conta removida com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Usuário não encontrado&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @DeleteMapping(&quot;/me&quot;)
+    public ResponseEntity&lt;MessageResponse&gt; deleteAccount(@AuthenticationPrincipal UserPrincipal principal) {
+<span class="fc" id="L81">        userService.deleteByEmail(principal.getUsername());</span>
+<span class="fc" id="L82">        return ResponseEntity.ok(new MessageResponse(&quot;Conta removida com sucesso&quot;));</span>
+    }
+
+<span class="fc" id="L85">    public record MessageResponse(String message) {}</span>
+
+    @Operation(summary = &quot;Buscar usuários por nome&quot;,
+        parameters = {
+            @Parameter(name = &quot;name&quot;, description = &quot;Trecho do nome a buscar&quot;, required = true),
+            @Parameter(name = &quot;page&quot;, description = &quot;Número da página (0-based)&quot;),
+            @Parameter(name = &quot;size&quot;, description = &quot;Tamanho da página&quot;)
+        },
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista paginada de usuários&quot;)
+        })
+    @GetMapping(&quot;/search&quot;)
+    public ResponseEntity&lt;Page&lt;UserResponse&gt;&gt; searchByName(
+            @RequestParam String name,
+            @PageableDefault(size = 10, sort = &quot;name&quot;) Pageable pageable) {
+<span class="fc" id="L100">        return ResponseEntity.ok(userService.findByName(name, pageable));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

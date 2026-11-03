@@ -1,0 +1,13 @@
+com/restaurant/menu/MenuItemServiceTest.class
+com/restaurant/user/UserServiceTest.class
+com/restaurant/user/UserControllerIT.class
+com/restaurant/security/JwtAuthFilterIT.class
+com/restaurant/menu/MenuItemControllerIT.class
+com/restaurant/auth/AuthControllerIT.class
+com/restaurant/util/IntegrationTestBase.class
+com/restaurant/auth/AuthServiceTest.class
+com/restaurant/restaurant/RestaurantControllerIT.class
+com/restaurant/exception/GlobalExceptionHandlerIT.class
+com/restaurant/restaurant/RestaurantServiceTest.class
+com/restaurant/usertype/UserTypeControllerIT.class
+com/restaurant/usertype/UserTypeServiceTest.class

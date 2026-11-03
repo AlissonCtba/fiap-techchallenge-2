@@ -1,0 +1,16 @@
+meta {
+  name: "[DEMO] 7. Listar restaurantes"
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/v1/restaurants
+  body: none
+  auth: none
+}
+
+docs {
+  ROTEIRO: Lista todos os restaurantes com paginação.
+  Qualquer usuário autenticado pode consultar.
+}

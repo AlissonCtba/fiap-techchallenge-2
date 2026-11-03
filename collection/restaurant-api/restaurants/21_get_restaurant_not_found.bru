@@ -1,0 +1,21 @@
+meta {
+  name: Restaurante - Buscar ID inexistente
+  type: http
+  seq: 21
+}
+
+get {
+  url: {{baseUrl}}/api/v1/restaurants/999999
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("status 404", function() {
+    expect(res.status).to.equal(404);
+  });
+}

@@ -1,0 +1,16 @@
+meta {
+  name: "[DEMO] 14. Buscar restaurante por ID (confirma atualização)"
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}
+  body: none
+  auth: none
+}
+
+docs {
+  ROTEIRO: Busca o restaurante pelo ID para confirmar as atualizações.
+  Mostra nome e tipo de cozinha já atualizados.
+}

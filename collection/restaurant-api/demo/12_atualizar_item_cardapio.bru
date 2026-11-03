@@ -1,0 +1,30 @@
+meta {
+  name: "[DEMO] 12. Atualizar item do cardápio"
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu/{{menuItemId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Lasanha Bolonhesa Premium",
+    "description": "Lasanha premium com molho bolonhesa artesanal, queijo gratinado e trufas",
+    "price": 59.90,
+    "dineInOnly": false,
+    "photoPath": "/images/lasanha-premium.jpg"
+  }
+}
+
+docs {
+  ROTEIRO: Atualiza o primeiro item — preço e descrição novos.
+  Demonstra o U do CRUD de cardápio.
+}

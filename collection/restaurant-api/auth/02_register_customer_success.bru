@@ -16,7 +16,7 @@ body:json {
     "login": "maria.cliente",
     "email": "maria@cliente.com",
     "password": "senha123",
-    "role": "CUSTOMER",
+    "userTypeId": 2,
     "address": {
       "street": "Av. Paulista",
       "number": "900",
@@ -24,6 +24,12 @@ body:json {
       "state": "SP",
       "zipCode": "01310-200"
     }
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("customerToken", res.body.token);
   }
 }
 

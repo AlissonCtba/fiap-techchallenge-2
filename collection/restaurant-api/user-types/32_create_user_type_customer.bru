@@ -1,0 +1,33 @@
+meta {
+  name: Tipo de Usuário - Criar CUSTOMER
+  type: http
+  seq: 32
+}
+
+post {
+  url: {{baseUrl}}/api/v1/user-types
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "CUSTOMER"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("customerTypeId", res.body.id);
+  }
+}
+
+tests {
+  test("status 201", function() {
+    expect(res.status).to.equal(201);
+  });
+}

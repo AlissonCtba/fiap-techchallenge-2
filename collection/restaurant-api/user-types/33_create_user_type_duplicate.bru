@@ -1,0 +1,27 @@
+meta {
+  name: Tipo de Usuário - Criar duplicado (conflito)
+  type: http
+  seq: 33
+}
+
+post {
+  url: {{baseUrl}}/api/v1/user-types
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "OWNER"
+  }
+}
+
+tests {
+  test("status 409", function() {
+    expect(res.status).to.equal(409);
+  });
+}

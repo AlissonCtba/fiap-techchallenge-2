@@ -1,0 +1,17 @@
+meta {
+  name: "[DEMO] 1. Listar tipos de usuário existentes"
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/v1/user-types
+  body: none
+  auth: none
+}
+
+docs {
+  ROTEIRO: Mostra que já existem os tipos OWNER e CUSTOMER criados pelo init.sql.
+  Explica que UserType é uma entidade gerenciável — pode criar novos tipos,
+  mas só OWNER e CUSTOMER podem ser associados a usuários.
+}

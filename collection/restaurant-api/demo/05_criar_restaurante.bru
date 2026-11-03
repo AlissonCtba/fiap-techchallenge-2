@@ -1,0 +1,45 @@
+meta {
+  name: "[DEMO] 5. Criar restaurante (como OWNER)"
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/v1/restaurants
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Cantina do João",
+    "address": {
+      "street": "Av. Paulista",
+      "number": "1000",
+      "complement": "Loja 5",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01310-100"
+    },
+    "cuisineType": "Italiana",
+    "openingTime": "11:00:00",
+    "closingTime": "23:00:00"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("restaurantId", res.body.id);
+  }
+}
+
+docs {
+  ROTEIRO: Cria um restaurante usando o token do OWNER.
+  Destacar os campos: nome, endereço completo, tipo de cozinha, horário.
+  O dono é inferido automaticamente pelo token JWT.
+  Salva o id do restaurante para os próximos requests.
+}

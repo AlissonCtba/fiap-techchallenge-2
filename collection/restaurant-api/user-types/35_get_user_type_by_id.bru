@@ -1,0 +1,21 @@
+meta {
+  name: Tipo de Usuário - Buscar por ID
+  type: http
+  seq: 35
+}
+
+get {
+  url: {{baseUrl}}/api/v1/user-types/{{ownerTypeId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}

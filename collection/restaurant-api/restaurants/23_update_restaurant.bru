@@ -1,0 +1,41 @@
+meta {
+  name: Restaurante - Atualizar
+  type: http
+  seq: 23
+}
+
+put {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Cantina do João - Atualizada",
+    "address": {
+      "street": "Av. Paulista",
+      "number": "1000",
+      "complement": "Loja 6",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01310-100"
+    },
+    "cuisineType": "Italiana Moderna",
+    "openingTime": "12:00:00",
+    "closingTime": "22:00:00"
+  }
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("nome atualizado", function() {
+    expect(res.body.name).to.equal("Cantina do João - Atualizada");
+  });
+}

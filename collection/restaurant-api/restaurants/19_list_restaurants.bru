@@ -1,0 +1,24 @@
+meta {
+  name: Restaurante - Listar todos
+  type: http
+  seq: 19
+}
+
+get {
+  url: {{baseUrl}}/api/v1/restaurants
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("retorna página", function() {
+    expect(res.body.content).to.be.an("array");
+  });
+}

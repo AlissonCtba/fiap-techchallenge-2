@@ -1,0 +1,38 @@
+meta {
+  name: "[DEMO] 9. Adicionar item ao cardápio"
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Lasanha Bolonhesa",
+    "description": "Lasanha tradicional com molho bolonhesa e queijo gratinado",
+    "price": 45.90,
+    "dineInOnly": false,
+    "photoPath": "/images/lasanha-bolonhesa.jpg"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("menuItemId", res.body.id);
+  }
+}
+
+docs {
+  ROTEIRO: Adiciona item ao cardápio do restaurante.
+  Destacar todos os campos: nome, descrição, preço, dineInOnly, photoPath.
+  dineInOnly=false significa que pode pedir para delivery também.
+  photoPath é o caminho onde a foto estaria armazenada.
+}

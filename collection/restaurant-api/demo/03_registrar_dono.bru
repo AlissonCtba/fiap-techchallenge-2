@@ -1,0 +1,42 @@
+meta {
+  name: "[DEMO] 3. Registrar dono de restaurante"
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "João Silva",
+    "login": "joao.owner",
+    "email": "joao@restaurante.com",
+    "password": "senha123",
+    "userTypeId": 1,
+    "address": {
+      "street": "Rua das Flores",
+      "number": "123",
+      "complement": "Sala 1",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01310-100"
+    }
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("token", res.body.token);
+    bru.setEnvVar("ownerEmail", res.body.email);
+  }
+}
+
+docs {
+  ROTEIRO: Registra um usuário do tipo OWNER (id=1).
+  O token é salvo automaticamente na variável de ambiente.
+  Mostrar no response que o campo userType retorna o objeto com id e name.
+}

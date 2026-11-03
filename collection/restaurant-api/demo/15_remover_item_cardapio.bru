@@ -1,0 +1,21 @@
+meta {
+  name: "[DEMO] 15. Remover item do cardápio"
+  type: http
+  seq: 15
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu/{{menuItemId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ROTEIRO: Remove o item do cardápio (Lasanha).
+  Demonstra o D do CRUD de cardápio.
+  Após executar, liste o cardápio novamente (request 11) para confirmar.
+}

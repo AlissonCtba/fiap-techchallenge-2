@@ -1,0 +1,16 @@
+meta {
+  name: "[DEMO] 8. Buscar restaurante por tipo de cozinha"
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/v1/restaurants/search/cuisine?cuisineType=Italiana
+  body: none
+  auth: none
+}
+
+docs {
+  ROTEIRO: Busca restaurantes por tipo de cozinha.
+  Útil para clientes que querem escolher pelo tipo de comida.
+}

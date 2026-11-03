@@ -1,0 +1,34 @@
+meta {
+  name: Cardápio - Atualizar item
+  type: http
+  seq: 29
+}
+
+put {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu/{{menuItemId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Lasanha Bolonhesa Premium",
+    "description": "Lasanha tradicional com molho bolonhesa, queijo gratinado e trufas",
+    "price": 59.90,
+    "dineInOnly": true,
+    "photoPath": "/images/lasanha-premium.jpg"
+  }
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("preço atualizado", function() {
+    expect(res.body.price).to.equal(59.90);
+  });
+}

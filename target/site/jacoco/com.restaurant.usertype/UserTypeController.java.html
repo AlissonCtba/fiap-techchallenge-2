@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserTypeController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">restaurant-api</a> &gt; <a href="index.source.html" class="el_package">com.restaurant.usertype</a> &gt; <span class="el_source">UserTypeController.java</span></div><h1>UserTypeController.java</h1><pre class="source lang-java linenums">package com.restaurant.usertype;
+
+import com.restaurant.usertype.dto.UserTypeRequest;
+import com.restaurant.usertype.dto.UserTypeResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/v1/user-types&quot;)
+@RequiredArgsConstructor
+@Tag(name = &quot;Tipos de Usuário&quot;, description = &quot;Gerenciamento de tipos de usuário&quot;)
+@SecurityRequirement(name = &quot;bearerAuth&quot;)
+public class UserTypeController {
+
+    private final UserTypeService userTypeService;
+
+    @Operation(summary = &quot;Criar tipo de usuário&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Tipo criado&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Dados inválidos&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Tipo já existe&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @PostMapping
+    public ResponseEntity&lt;UserTypeResponse&gt; create(@Valid @RequestBody UserTypeRequest request) {
+<span class="fc" id="L39">        return ResponseEntity.status(HttpStatus.CREATED).body(userTypeService.create(request));</span>
+    }
+
+    @Operation(summary = &quot;Listar todos os tipos de usuário&quot;)
+    @GetMapping
+    public ResponseEntity&lt;List&lt;UserTypeResponse&gt;&gt; findAll() {
+<span class="fc" id="L45">        return ResponseEntity.ok(userTypeService.findAll());</span>
+    }
+
+    @Operation(summary = &quot;Buscar tipo de usuário por ID&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Tipo encontrado&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Tipo não encontrado&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;UserTypeResponse&gt; findById(@PathVariable Long id) {
+<span class="fc" id="L56">        return ResponseEntity.ok(userTypeService.findById(id));</span>
+    }
+
+    @Operation(summary = &quot;Atualizar tipo de usuário&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Tipo atualizado&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Tipo não encontrado&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Nome já em uso&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;UserTypeResponse&gt; update(
+            @PathVariable Long id,
+            @Valid @RequestBody UserTypeRequest request) {
+<span class="fc" id="L71">        return ResponseEntity.ok(userTypeService.update(id, request));</span>
+    }
+
+    @Operation(summary = &quot;Remover tipo de usuário&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Tipo removido&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Tipo não encontrado&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; delete(@PathVariable Long id) {
+<span class="fc" id="L82">        userTypeService.delete(id);</span>
+<span class="fc" id="L83">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

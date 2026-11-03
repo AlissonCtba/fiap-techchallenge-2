@@ -1,0 +1,30 @@
+meta {
+  name: "[DEMO] 0b. Login como CUSTOMER"
+  type: http
+  seq: 0
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "maria@cliente.com",
+    "password": "senha123"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("customerToken", res.body.token);
+  }
+}
+
+docs {
+  ROTEIRO: Use este request para logar como cliente.
+  O token é salvo em {{customerToken}}.
+  Pré-requisito: ter executado o request 04 (registrar cliente) antes.
+}

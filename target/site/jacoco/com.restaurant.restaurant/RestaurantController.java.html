@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestaurantController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">restaurant-api</a> &gt; <a href="index.source.html" class="el_package">com.restaurant.restaurant</a> &gt; <span class="el_source">RestaurantController.java</span></div><h1>RestaurantController.java</h1><pre class="source lang-java linenums">package com.restaurant.restaurant;
+
+import com.restaurant.restaurant.dto.RestaurantRequest;
+import com.restaurant.restaurant.dto.RestaurantResponse;
+import com.restaurant.security.UserPrincipal;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(&quot;/api/v1/restaurants&quot;)
+@RequiredArgsConstructor
+@Tag(name = &quot;Restaurantes&quot;, description = &quot;Gerenciamento de restaurantes&quot;)
+@SecurityRequirement(name = &quot;bearerAuth&quot;)
+public class RestaurantController {
+
+    private final RestaurantService restaurantService;
+
+    @Operation(summary = &quot;Cadastrar restaurante&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Restaurante criado com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Dados inválidos&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Apenas donos de restaurante podem cadastrar&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @PostMapping
+    public ResponseEntity&lt;RestaurantResponse&gt; create(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody RestaurantRequest request) {
+<span class="fc" id="L45">        return ResponseEntity.status(HttpStatus.CREATED)</span>
+<span class="fc" id="L46">                .body(restaurantService.create(principal.getUsername(), request));</span>
+    }
+
+    @Operation(summary = &quot;Listar todos os restaurantes&quot;)
+    @GetMapping
+    public ResponseEntity&lt;Page&lt;RestaurantResponse&gt;&gt; findAll(
+            @PageableDefault(size = 10, sort = &quot;name&quot;) Pageable pageable) {
+<span class="fc" id="L53">        return ResponseEntity.ok(restaurantService.findAll(pageable));</span>
+    }
+
+    @Operation(summary = &quot;Buscar restaurante por ID&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Restaurante encontrado&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Restaurante não encontrado&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;RestaurantResponse&gt; findById(@PathVariable Long id) {
+<span class="fc" id="L64">        return ResponseEntity.ok(restaurantService.findById(id));</span>
+    }
+
+    @Operation(summary = &quot;Buscar restaurantes por nome&quot;,
+        parameters = @Parameter(name = &quot;name&quot;, description = &quot;Trecho do nome&quot;, required = true))
+    @GetMapping(&quot;/search/name&quot;)
+    public ResponseEntity&lt;Page&lt;RestaurantResponse&gt;&gt; searchByName(
+            @RequestParam String name,
+            @PageableDefault(size = 10, sort = &quot;name&quot;) Pageable pageable) {
+<span class="fc" id="L73">        return ResponseEntity.ok(restaurantService.searchByName(name, pageable));</span>
+    }
+
+    @Operation(summary = &quot;Buscar restaurantes por tipo de cozinha&quot;,
+        parameters = @Parameter(name = &quot;cuisineType&quot;, description = &quot;Tipo de cozinha&quot;, required = true))
+    @GetMapping(&quot;/search/cuisine&quot;)
+    public ResponseEntity&lt;Page&lt;RestaurantResponse&gt;&gt; searchByCuisine(
+            @RequestParam String cuisineType,
+            @PageableDefault(size = 10, sort = &quot;name&quot;) Pageable pageable) {
+<span class="fc" id="L82">        return ResponseEntity.ok(restaurantService.searchByCuisine(cuisineType, pageable));</span>
+    }
+
+    @Operation(summary = &quot;Atualizar restaurante&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Atualizado com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Sem permissão&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Restaurante não encontrado&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;RestaurantResponse&gt; update(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable Long id,
+            @Valid @RequestBody RestaurantRequest request) {
+<span class="fc" id="L98">        return ResponseEntity.ok(restaurantService.update(principal.getUsername(), id, request));</span>
+    }
+
+    @Operation(summary = &quot;Remover restaurante&quot;,
+        responses = {
+            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Removido com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Sem permissão&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Restaurante não encontrado&quot;,
+                content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+        })
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; delete(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable Long id) {
+<span class="fc" id="L113">        restaurantService.delete(principal.getUsername(), id);</span>
+<span class="fc" id="L114">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

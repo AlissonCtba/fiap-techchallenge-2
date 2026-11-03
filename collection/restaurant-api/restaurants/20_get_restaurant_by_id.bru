@@ -1,0 +1,24 @@
+meta {
+  name: Restaurante - Buscar por ID
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("id correto", function() {
+    expect(res.body.id).to.equal(bru.getEnvVar("restaurantId"));
+  });
+}

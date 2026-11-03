@@ -1,0 +1,21 @@
+meta {
+  name: Restaurante - Remover
+  type: http
+  seq: 24
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("status 204", function() {
+    expect(res.status).to.equal(204);
+  });
+}

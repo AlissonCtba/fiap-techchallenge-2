@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MenuItemService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">restaurant-api</a> &gt; <a href="index.source.html" class="el_package">com.restaurant.menu</a> &gt; <span class="el_source">MenuItemService.java</span></div><h1>MenuItemService.java</h1><pre class="source lang-java linenums">package com.restaurant.menu;
+
+import com.restaurant.menu.dto.MenuItemRequest;
+import com.restaurant.menu.dto.MenuItemResponse;
+import com.restaurant.restaurant.Restaurant;
+import com.restaurant.restaurant.RestaurantNotFoundException;
+import com.restaurant.restaurant.RestaurantRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class MenuItemService {
+
+    private final MenuItemRepository menuItemRepository;
+    private final RestaurantRepository restaurantRepository;
+
+    @Transactional
+    public MenuItemResponse create(String ownerEmail, Long restaurantId, MenuItemRequest request) {
+<span class="fc" id="L24">        Restaurant restaurant = getRestaurantForOwner(ownerEmail, restaurantId);</span>
+
+<span class="fc" id="L26">        MenuItem item = MenuItem.builder()</span>
+<span class="fc" id="L27">                .name(request.name())</span>
+<span class="fc" id="L28">                .description(request.description())</span>
+<span class="fc" id="L29">                .price(request.price())</span>
+<span class="fc" id="L30">                .dineInOnly(request.dineInOnly())</span>
+<span class="fc" id="L31">                .photoPath(request.photoPath())</span>
+<span class="fc" id="L32">                .restaurant(restaurant)</span>
+<span class="fc" id="L33">                .build();</span>
+
+<span class="fc" id="L35">        return MenuItemResponse.from(menuItemRepository.save(item));</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;MenuItemResponse&gt; findByRestaurant(Long restaurantId, Pageable pageable) {
+<span class="fc" id="L40">        assertRestaurantExists(restaurantId);</span>
+<span class="fc" id="L41">        return menuItemRepository.findByRestaurantId(restaurantId, pageable)</span>
+<span class="fc" id="L42">                .map(MenuItemResponse::from);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public MenuItemResponse findById(Long restaurantId, Long itemId) {
+<span class="fc" id="L47">        assertRestaurantExists(restaurantId);</span>
+<span class="fc" id="L48">        MenuItem item = getItem(itemId);</span>
+<span class="fc" id="L49">        assertBelongsToRestaurant(item, restaurantId);</span>
+<span class="fc" id="L50">        return MenuItemResponse.from(item);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;MenuItemResponse&gt; searchByName(Long restaurantId, String name, Pageable pageable) {
+<span class="fc" id="L55">        assertRestaurantExists(restaurantId);</span>
+<span class="fc" id="L56">        return menuItemRepository</span>
+<span class="fc" id="L57">                .findByRestaurantIdAndNameContainingIgnoreCase(restaurantId, name, pageable)</span>
+<span class="fc" id="L58">                .map(MenuItemResponse::from);</span>
+    }
+
+    @Transactional
+    public MenuItemResponse update(String ownerEmail, Long restaurantId, Long itemId, MenuItemRequest request) {
+<span class="fc" id="L63">        getRestaurantForOwner(ownerEmail, restaurantId);</span>
+<span class="fc" id="L64">        MenuItem item = getItem(itemId);</span>
+<span class="fc" id="L65">        assertBelongsToRestaurant(item, restaurantId);</span>
+
+<span class="fc" id="L67">        item.setName(request.name());</span>
+<span class="fc" id="L68">        item.setDescription(request.description());</span>
+<span class="fc" id="L69">        item.setPrice(request.price());</span>
+<span class="fc" id="L70">        item.setDineInOnly(request.dineInOnly());</span>
+<span class="fc" id="L71">        item.setPhotoPath(request.photoPath());</span>
+
+<span class="fc" id="L73">        return MenuItemResponse.from(menuItemRepository.save(item));</span>
+    }
+
+    @Transactional
+    public void delete(String ownerEmail, Long restaurantId, Long itemId) {
+<span class="fc" id="L78">        getRestaurantForOwner(ownerEmail, restaurantId);</span>
+<span class="fc" id="L79">        MenuItem item = getItem(itemId);</span>
+<span class="fc" id="L80">        assertBelongsToRestaurant(item, restaurantId);</span>
+<span class="fc" id="L81">        menuItemRepository.delete(item);</span>
+<span class="fc" id="L82">    }</span>
+
+    // helpers
+
+    private Restaurant getRestaurantForOwner(String ownerEmail, Long restaurantId) {
+<span class="fc" id="L87">        Restaurant restaurant = restaurantRepository.findById(restaurantId)</span>
+<span class="fc" id="L88">                .orElseThrow(() -&gt; new RestaurantNotFoundException(&quot;Restaurante não encontrado: &quot; + restaurantId));</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (!restaurant.getOwner().getEmail().equals(ownerEmail)) {</span>
+<span class="fc" id="L90">            throw new AccessDeniedException(&quot;Você não é o dono deste restaurante&quot;);</span>
+        }
+<span class="fc" id="L92">        return restaurant;</span>
+    }
+
+    private MenuItem getItem(Long itemId) {
+<span class="fc" id="L96">        return menuItemRepository.findById(itemId)</span>
+<span class="fc" id="L97">                .orElseThrow(() -&gt; new MenuItemNotFoundException(&quot;Item não encontrado: &quot; + itemId));</span>
+    }
+
+    private void assertRestaurantExists(Long restaurantId) {
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (!restaurantRepository.existsById(restaurantId)) {</span>
+<span class="fc" id="L102">            throw new RestaurantNotFoundException(&quot;Restaurante não encontrado: &quot; + restaurantId);</span>
+        }
+<span class="fc" id="L104">    }</span>
+
+    private void assertBelongsToRestaurant(MenuItem item, Long restaurantId) {
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (!item.getRestaurant().getId().equals(restaurantId)) {</span>
+<span class="nc" id="L108">            throw new MenuItemNotFoundException(&quot;Item não pertence ao restaurante informado&quot;);</span>
+        }
+<span class="fc" id="L110">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

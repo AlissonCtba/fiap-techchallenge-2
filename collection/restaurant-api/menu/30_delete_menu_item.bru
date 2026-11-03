@@ -1,0 +1,21 @@
+meta {
+  name: Cardápio - Remover item
+  type: http
+  seq: 30
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu/{{menuItemId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("status 204", function() {
+    expect(res.status).to.equal(204);
+  });
+}

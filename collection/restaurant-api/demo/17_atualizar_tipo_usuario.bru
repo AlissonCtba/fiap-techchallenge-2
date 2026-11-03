@@ -1,0 +1,28 @@
+meta {
+  name: "[DEMO] 17. Atualizar tipo de usuário"
+  type: http
+  seq: 17
+}
+
+put {
+  url: {{baseUrl}}/api/v1/user-types/{{userTypeId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "PARCEIRO_ATUALIZADO"
+  }
+}
+
+docs {
+  ROTEIRO: Atualiza o tipo PARCEIRO criado no request 02.
+  Salve o id do tipo PARCEIRO na variável {{userTypeId}} manualmente
+  ou pegue do response do request 02.
+  Demonstra o U do CRUD de tipos de usuário.
+}

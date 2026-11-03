@@ -1,0 +1,36 @@
+meta {
+  name: "[DEMO] 6. CUSTOMER não pode criar restaurante (403)"
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/v1/restaurants
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "name": "Lanchonete",
+    "address": {
+      "street": "Rua B",
+      "number": "1",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01310-000"
+    },
+    "cuisineType": "Fast Food",
+    "openingTime": "08:00:00",
+    "closingTime": "20:00:00"
+  }
+}
+
+docs {
+  ROTEIRO: Demonstra controle de acesso — CUSTOMER recebe 403.
+  Mostra que apenas OWNER pode gerenciar restaurantes.
+}

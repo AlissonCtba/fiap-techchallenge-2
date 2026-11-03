@@ -1,7 +1,6 @@
 package com.restaurant.auth.dto;
 
 import com.restaurant.user.Address;
-import com.restaurant.user.UserRole;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +12,7 @@ public record RegisterRequest(
         @NotBlank String login,
         @Email @NotBlank String email,
         @NotBlank @Size(min = 6) String password,
-        @NotNull UserRole role,
+        /** ID do tipo de usuário (ex: 1 = OWNER, 2 = CUSTOMER) */
+        @NotNull Long userTypeId,
         @Valid @NotNull Address address
 ) {}

@@ -1,0 +1,13 @@
+/app/src/test/java/com/restaurant/auth/AuthControllerIT.java
+/app/src/test/java/com/restaurant/auth/AuthServiceTest.java
+/app/src/test/java/com/restaurant/exception/GlobalExceptionHandlerIT.java
+/app/src/test/java/com/restaurant/menu/MenuItemControllerIT.java
+/app/src/test/java/com/restaurant/menu/MenuItemServiceTest.java
+/app/src/test/java/com/restaurant/restaurant/RestaurantControllerIT.java
+/app/src/test/java/com/restaurant/restaurant/RestaurantServiceTest.java
+/app/src/test/java/com/restaurant/security/JwtAuthFilterIT.java
+/app/src/test/java/com/restaurant/user/UserControllerIT.java
+/app/src/test/java/com/restaurant/user/UserServiceTest.java
+/app/src/test/java/com/restaurant/usertype/UserTypeControllerIT.java
+/app/src/test/java/com/restaurant/usertype/UserTypeServiceTest.java
+/app/src/test/java/com/restaurant/util/IntegrationTestBase.java

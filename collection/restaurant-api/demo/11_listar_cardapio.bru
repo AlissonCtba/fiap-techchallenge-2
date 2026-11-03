@@ -1,0 +1,16 @@
+meta {
+  name: "[DEMO] 11. Listar cardápio do restaurante"
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu
+  body: none
+  auth: none
+}
+
+docs {
+  ROTEIRO: Lista todos os itens do cardápio do restaurante.
+  Mostra os dois itens criados — lasanha (dineInOnly=false) e tiramisù (dineInOnly=true).
+}

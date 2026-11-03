@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">restaurant-api</a> &gt; <a href="index.source.html" class="el_package">com.restaurant.user</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package com.restaurant.user;
+
+import com.restaurant.auth.EmailAlreadyExistsException;
+import com.restaurant.exception.LoginAlreadyExistsException;
+import com.restaurant.exception.UserNotFoundException;
+import com.restaurant.user.dto.ChangePasswordRequest;
+import com.restaurant.user.dto.UpdateUserRequest;
+import com.restaurant.user.dto.UserResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public void changePassword(String email, ChangePasswordRequest request) {
+<span class="fc" id="L28">        User user = findByEmail(email);</span>
+
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {</span>
+<span class="fc" id="L31">            throw new BadCredentialsException(&quot;Senha atual incorreta&quot;);</span>
+        }
+
+<span class="fc" id="L34">        user.setPassword(passwordEncoder.encode(request.newPassword()));</span>
+<span class="fc" id="L35">        user.setPasswordChangedAt(LocalDateTime.now());</span>
+<span class="fc" id="L36">        userRepository.save(user);</span>
+<span class="fc" id="L37">    }</span>
+
+    @Transactional
+    public UserResponse updateUser(String email, UpdateUserRequest request) {
+<span class="fc" id="L41">        User user = findByEmail(email);</span>
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (!user.getEmail().equals(request.email())</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">                &amp;&amp; userRepository.existsByEmailAndIdNot(request.email(), user.getId())) {</span>
+<span class="fc" id="L45">            throw new EmailAlreadyExistsException(&quot;E-mail já está em uso: &quot; + request.email());</span>
+        }
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (!user.getLogin().equals(request.login())</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">                &amp;&amp; userRepository.existsByLoginAndIdNot(request.login(), user.getId())) {</span>
+<span class="fc" id="L50">            throw new LoginAlreadyExistsException(&quot;Login já está em uso: &quot; + request.login());</span>
+        }
+
+<span class="fc" id="L53">        user.setName(request.name());</span>
+<span class="fc" id="L54">        user.setLogin(request.login());</span>
+<span class="fc" id="L55">        user.setEmail(request.email());</span>
+<span class="fc" id="L56">        user.setAddress(request.address());</span>
+<span class="fc" id="L57">        return UserResponse.from(userRepository.save(user));</span>
+    }
+
+    @Transactional
+    public void deleteByEmail(String email) {
+<span class="fc" id="L62">        User user = findByEmail(email);</span>
+<span class="fc" id="L63">        userRepository.delete(user);</span>
+<span class="fc" id="L64">    }</span>
+
+    @Transactional(readOnly = true)
+    public Page&lt;UserResponse&gt; findByName(String name, Pageable pageable) {
+<span class="fc" id="L68">        return userRepository.findByNameContainingIgnoreCase(name, pageable)</span>
+<span class="fc" id="L69">                .map(UserResponse::from);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse getProfile(String email) {
+<span class="fc" id="L74">        return UserResponse.from(findByEmail(email));</span>
+    }
+
+    private User findByEmail(String email) {
+<span class="fc" id="L78">        return userRepository.findByEmail(email)</span>
+<span class="fc" id="L79">                .orElseThrow(() -&gt; new UserNotFoundException(&quot;Usuário não encontrado: &quot; + email));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

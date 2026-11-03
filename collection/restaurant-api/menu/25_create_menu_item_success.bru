@@ -1,0 +1,43 @@
+meta {
+  name: Cardápio - Criar item (sucesso)
+  type: http
+  seq: 25
+}
+
+post {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Lasanha Bolonhesa",
+    "description": "Lasanha tradicional com molho bolonhesa e queijo gratinado",
+    "price": 45.90,
+    "dineInOnly": false,
+    "photoPath": "/images/lasanha-bolonhesa.jpg"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("menuItemId", res.body.id);
+  }
+}
+
+tests {
+  test("status 201", function() {
+    expect(res.status).to.equal(201);
+  });
+  test("retorna id", function() {
+    expect(res.body.id).to.be.a("number");
+  });
+  test("nome correto", function() {
+    expect(res.body.name).to.equal("Lasanha Bolonhesa");
+  });
+}

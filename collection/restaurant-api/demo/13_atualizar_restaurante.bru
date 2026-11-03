@@ -1,0 +1,37 @@
+meta {
+  name: "[DEMO] 13. Atualizar restaurante"
+  type: http
+  seq: 13
+}
+
+put {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Cantina do João - Ristorante",
+    "address": {
+      "street": "Av. Paulista",
+      "number": "1000",
+      "complement": "Loja 5",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01310-100"
+    },
+    "cuisineType": "Italiana Contemporânea",
+    "openingTime": "12:00:00",
+    "closingTime": "23:00:00"
+  }
+}
+
+docs {
+  ROTEIRO: Atualiza nome, tipo de cozinha e horário do restaurante.
+  Demonstra o U do CRUD de restaurante.
+}

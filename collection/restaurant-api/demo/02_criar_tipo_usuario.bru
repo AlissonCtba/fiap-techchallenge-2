@@ -1,0 +1,27 @@
+meta {
+  name: "[DEMO] 2. Criar novo tipo de usuário"
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/user-types
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "PARCEIRO"
+  }
+}
+
+docs {
+  ROTEIRO: Demonstra o CRUD de tipos — cria um tipo chamado PARCEIRO.
+  Mostra que qualquer nome é aceito no cadastro, mas apenas OWNER e CUSTOMER
+  podem ser usados para registrar usuários (valida regra de negócio).
+}

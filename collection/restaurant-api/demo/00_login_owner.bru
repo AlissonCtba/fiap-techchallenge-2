@@ -1,0 +1,30 @@
+meta {
+  name: "[DEMO] 0a. Login como OWNER"
+  type: http
+  seq: 0
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "joao@restaurante.com",
+    "password": "senha123"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("token", res.body.token);
+  }
+}
+
+docs {
+  ROTEIRO: Use este request para logar como dono do restaurante.
+  O token é salvo automaticamente em {{token}}.
+  Pré-requisito: ter executado o request 03 (registrar dono) antes.
+}

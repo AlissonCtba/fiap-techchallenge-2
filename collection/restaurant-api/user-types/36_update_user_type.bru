@@ -1,0 +1,30 @@
+meta {
+  name: Tipo de Usuário - Atualizar
+  type: http
+  seq: 36
+}
+
+put {
+  url: {{baseUrl}}/api/v1/user-types/{{ownerTypeId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "RESTAURANT_OWNER"
+  }
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("nome atualizado", function() {
+    expect(res.body.name).to.equal("RESTAURANT_OWNER");
+  });
+}

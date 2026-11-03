@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestaurantService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">restaurant-api</a> &gt; <a href="index.source.html" class="el_package">com.restaurant.restaurant</a> &gt; <span class="el_source">RestaurantService.java</span></div><h1>RestaurantService.java</h1><pre class="source lang-java linenums">package com.restaurant.restaurant;
+
+import com.restaurant.exception.UserNotFoundException;
+import com.restaurant.restaurant.dto.RestaurantRequest;
+import com.restaurant.restaurant.dto.RestaurantResponse;
+import com.restaurant.user.User;
+import com.restaurant.user.UserRepository;
+import com.restaurant.user.UserRole;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class RestaurantService {
+
+    private final RestaurantRepository restaurantRepository;
+    private final UserRepository userRepository;
+
+    @Transactional
+    public RestaurantResponse create(String ownerEmail, RestaurantRequest request) {
+<span class="fc" id="L25">        User owner = findOwner(ownerEmail);</span>
+
+<span class="fc" id="L27">        Restaurant restaurant = Restaurant.builder()</span>
+<span class="fc" id="L28">                .name(request.name())</span>
+<span class="fc" id="L29">                .address(request.address())</span>
+<span class="fc" id="L30">                .cuisineType(request.cuisineType())</span>
+<span class="fc" id="L31">                .openingTime(request.openingTime())</span>
+<span class="fc" id="L32">                .closingTime(request.closingTime())</span>
+<span class="fc" id="L33">                .owner(owner)</span>
+<span class="fc" id="L34">                .build();</span>
+
+<span class="fc" id="L36">        return RestaurantResponse.from(restaurantRepository.save(restaurant));</span>
+    }
+
+    @Transactional(readOnly = true)
+    public RestaurantResponse findById(Long id) {
+<span class="fc" id="L41">        return RestaurantResponse.from(getById(id));</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;RestaurantResponse&gt; findAll(Pageable pageable) {
+<span class="fc" id="L46">        return restaurantRepository.findAll(pageable).map(RestaurantResponse::from);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;RestaurantResponse&gt; searchByName(String name, Pageable pageable) {
+<span class="fc" id="L51">        return restaurantRepository.findByNameContainingIgnoreCase(name, pageable)</span>
+<span class="fc" id="L52">                .map(RestaurantResponse::from);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;RestaurantResponse&gt; searchByCuisine(String cuisineType, Pageable pageable) {
+<span class="fc" id="L57">        return restaurantRepository.findByCuisineTypeContainingIgnoreCase(cuisineType, pageable)</span>
+<span class="fc" id="L58">                .map(RestaurantResponse::from);</span>
+    }
+
+    @Transactional
+    public RestaurantResponse update(String ownerEmail, Long id, RestaurantRequest request) {
+<span class="fc" id="L63">        Restaurant restaurant = getById(id);</span>
+<span class="fc" id="L64">        assertOwner(restaurant, ownerEmail);</span>
+
+<span class="fc" id="L66">        restaurant.setName(request.name());</span>
+<span class="fc" id="L67">        restaurant.setAddress(request.address());</span>
+<span class="fc" id="L68">        restaurant.setCuisineType(request.cuisineType());</span>
+<span class="fc" id="L69">        restaurant.setOpeningTime(request.openingTime());</span>
+<span class="fc" id="L70">        restaurant.setClosingTime(request.closingTime());</span>
+
+<span class="fc" id="L72">        return RestaurantResponse.from(restaurantRepository.save(restaurant));</span>
+    }
+
+    @Transactional
+    public void delete(String ownerEmail, Long id) {
+<span class="fc" id="L77">        Restaurant restaurant = getById(id);</span>
+<span class="fc" id="L78">        assertOwner(restaurant, ownerEmail);</span>
+<span class="fc" id="L79">        restaurantRepository.delete(restaurant);</span>
+<span class="fc" id="L80">    }</span>
+
+    private Restaurant getById(Long id) {
+<span class="fc" id="L83">        return restaurantRepository.findById(id)</span>
+<span class="fc" id="L84">                .orElseThrow(() -&gt; new RestaurantNotFoundException(&quot;Restaurante não encontrado: &quot; + id));</span>
+    }
+
+    private User findOwner(String email) {
+<span class="fc" id="L88">        User user = userRepository.findByEmail(email)</span>
+<span class="fc" id="L89">                .orElseThrow(() -&gt; new UserNotFoundException(&quot;Usuário não encontrado: &quot; + email));</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (user.getRole() != UserRole.OWNER) {</span>
+<span class="fc" id="L91">            throw new AccessDeniedException(&quot;Apenas donos de restaurante podem gerenciar restaurantes&quot;);</span>
+        }
+<span class="fc" id="L93">        return user;</span>
+    }
+
+    private void assertOwner(Restaurant restaurant, String email) {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if (!restaurant.getOwner().getEmail().equals(email)) {</span>
+<span class="fc" id="L98">            throw new AccessDeniedException(&quot;Você não é o dono deste restaurante&quot;);</span>
+        }
+<span class="fc" id="L100">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

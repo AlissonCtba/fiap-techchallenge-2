@@ -1,0 +1,21 @@
+meta {
+  name: "[DEMO] 18. Remover tipo de usuário"
+  type: http
+  seq: 18
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/user-types/{{userTypeId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ROTEIRO: Remove o tipo PARCEIRO.
+  OWNER e CUSTOMER não podem ser removidos pois estão em uso por usuários.
+  Demonstra o D do CRUD de tipos de usuário.
+}

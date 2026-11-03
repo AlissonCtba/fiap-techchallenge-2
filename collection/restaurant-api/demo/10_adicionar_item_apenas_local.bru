@@ -1,0 +1,30 @@
+meta {
+  name: "[DEMO] 10. Adicionar item apenas para consumo no local"
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Tiramisù",
+    "description": "Sobremesa italiana clássica com mascarpone e café",
+    "price": 22.00,
+    "dineInOnly": true,
+    "photoPath": "/images/tiramisu.jpg"
+  }
+}
+
+docs {
+  ROTEIRO: Demonstra o campo dineInOnly=true — disponível apenas no restaurante.
+  Útil para pratos que não viajam bem (sobremesas, pratos quentes delicados).
+}

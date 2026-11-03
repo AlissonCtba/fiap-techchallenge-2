@@ -1,0 +1,37 @@
+meta {
+  name: Cadastro - Tipo de usuário inválido para registro (422)
+  type: http
+  seq: 39
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Carlos Gerente",
+    "login": "carlos.gerente",
+    "email": "carlos@gerente.com",
+    "password": "senha123",
+    "userTypeId": {{invalidTypeId}},
+    "address": {
+      "street": "Rua B",
+      "number": "10",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01310-000"
+    }
+  }
+}
+
+tests {
+  test("status 422 - tipo inválido para registro", function() {
+    expect(res.status).to.equal(422);
+  });
+  test("detalhe menciona tipos válidos", function() {
+    expect(res.body.detail).to.include("OWNER");
+  });
+}

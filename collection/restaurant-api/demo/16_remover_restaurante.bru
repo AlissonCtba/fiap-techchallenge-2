@@ -1,0 +1,21 @@
+meta {
+  name: "[DEMO] 16. Remover restaurante"
+  type: http
+  seq: 16
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  ROTEIRO: Remove o restaurante.
+  Demonstra o D do CRUD de restaurante.
+  Por CASCADE, os itens do cardápio são removidos junto.
+}

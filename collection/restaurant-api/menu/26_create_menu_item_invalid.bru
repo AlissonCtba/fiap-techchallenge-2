@@ -1,0 +1,29 @@
+meta {
+  name: Cardápio - Criar item sem nome (inválido)
+  type: http
+  seq: 26
+}
+
+post {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "",
+    "price": -5.00,
+    "dineInOnly": false
+  }
+}
+
+tests {
+  test("status 400", function() {
+    expect(res.status).to.equal(400);
+  });
+}

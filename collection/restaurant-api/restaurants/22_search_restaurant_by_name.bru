@@ -1,0 +1,24 @@
+meta {
+  name: Restaurante - Buscar por nome
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{baseUrl}}/api/v1/restaurants/search/name?name=Cantina
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("retorna resultados", function() {
+    expect(res.body.content.length).to.be.greaterThan(0);
+  });
+}

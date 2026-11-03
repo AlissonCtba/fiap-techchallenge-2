@@ -1,0 +1,33 @@
+meta {
+  name: Tipo de Usuário - Criar tipo inválido para registro
+  type: http
+  seq: 38
+}
+
+post {
+  url: {{baseUrl}}/api/v1/user-types
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "GERENTE"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("invalidTypeId", res.body.id);
+  }
+}
+
+tests {
+  test("status 201 - tipo criado com sucesso", function() {
+    expect(res.status).to.equal(201);
+  });
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Cardápio - Buscar item por ID
+  type: http
+  seq: 28
+}
+
+get {
+  url: {{baseUrl}}/api/v1/restaurants/{{restaurantId}}/menu/{{menuItemId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}

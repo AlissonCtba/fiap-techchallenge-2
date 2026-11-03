@@ -1,0 +1,24 @@
+meta {
+  name: Tipo de Usuário - Listar todos
+  type: http
+  seq: 34
+}
+
+get {
+  url: {{baseUrl}}/api/v1/user-types
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("status 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("retorna lista", function() {
+    expect(res.body).to.be.an("array");
+  });
+}

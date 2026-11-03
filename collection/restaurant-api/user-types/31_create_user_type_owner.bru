@@ -1,0 +1,36 @@
+meta {
+  name: Tipo de Usuário - Criar OWNER
+  type: http
+  seq: 31
+}
+
+post {
+  url: {{baseUrl}}/api/v1/user-types
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "OWNER"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("ownerTypeId", res.body.id);
+  }
+}
+
+tests {
+  test("status 201", function() {
+    expect(res.status).to.equal(201);
+  });
+  test("nome correto", function() {
+    expect(res.body.name).to.equal("OWNER");
+  });
+}
