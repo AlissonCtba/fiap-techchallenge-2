@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -36,33 +35,41 @@ class AuthServiceTest {
 
     @Mock UserRepository userRepository;
     @Mock UserTypeRepository userTypeRepository;
-    @Mock PasswordEncoder passwordEncoder;
     @Mock JwtService jwtService;
     @Mock AuthenticationManager authenticationManager;
+    @Mock AuthMapper authMapper;
     @InjectMocks AuthService authService;
 
     private Address address;
     private UserType ownerType;
+    private User user;
 
     @BeforeEach
     void setUp() {
         address = new Address("Rua A", "1", null, "SP", "SP", "01310-000");
         ownerType = new UserType(1L, "OWNER");
+        user = User.builder()
+                .email("joao@test.com").name("João").password("encoded")
+                .role(UserRole.OWNER).userType(ownerType).address(address).build();
     }
 
     @Test
     void register_success() {
         when(userRepository.existsByEmail("joao@test.com")).thenReturn(false);
         when(userTypeRepository.findById(1L)).thenReturn(Optional.of(ownerType));
-        when(passwordEncoder.encode("senha123")).thenReturn("encoded");
-        when(userRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(authMapper.resolveRole("OWNER")).thenReturn(UserRole.OWNER);
+        when(authMapper.toUser(any(), eq(ownerType), eq(UserRole.OWNER))).thenReturn(user);
+        when(userRepository.save(user)).thenReturn(user);
         when(jwtService.generateToken(any())).thenReturn("jwt-token");
+        when(authMapper.toAuthResponse(eq(user), eq("jwt-token")))
+                .thenReturn(new AuthResponse("jwt-token", user.getEmail(), user.getName(), UserRole.OWNER, ownerType));
 
         RegisterRequest req = new RegisterRequest("João", "joao", "joao@test.com", "senha123", 1L, address);
         AuthResponse response = authService.register(req);
 
         assertThat(response.token()).isEqualTo("jwt-token");
         assertThat(response.role()).isEqualTo(UserRole.OWNER);
+        verify(userRepository).save(user);
     }
 
     @Test
@@ -89,9 +96,9 @@ class AuthServiceTest {
 
     @Test
     void register_invalidUserType_throws() {
-        UserType invalidType = new UserType(3L, "GERENTE");
         when(userRepository.existsByEmail("joao@test.com")).thenReturn(false);
-        when(userTypeRepository.findById(3L)).thenReturn(Optional.of(invalidType));
+        when(userTypeRepository.findById(3L)).thenReturn(Optional.of(new UserType(3L, "GERENTE")));
+        when(authMapper.resolveRole("GERENTE")).thenThrow(new InvalidUserTypeException("GERENTE"));
 
         RegisterRequest req = new RegisterRequest("João", "joao", "joao@test.com", "senha123", 3L, address);
 
@@ -101,12 +108,10 @@ class AuthServiceTest {
 
     @Test
     void login_success() {
-        User user = User.builder()
-                .email("joao@test.com").name("João").password("encoded")
-                .role(UserRole.OWNER).userType(ownerType).address(address).build();
-
         when(userRepository.findByEmail("joao@test.com")).thenReturn(Optional.of(user));
         when(jwtService.generateToken(any())).thenReturn("jwt-token");
+        when(authMapper.toAuthResponse(eq(user), eq("jwt-token")))
+                .thenReturn(new AuthResponse("jwt-token", user.getEmail(), user.getName(), UserRole.OWNER, ownerType));
 
         AuthResponse response = authService.login(new LoginRequest("joao@test.com", "senha123"));
 
